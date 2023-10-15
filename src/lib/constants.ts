@@ -6,7 +6,4 @@ export const IS_BROWSER = typeof window !== "undefined"
 export const TAG_TYPES = {
   PODCASTS: "podcasts",
   EPISODES: "episodes",
-  BOOKING: "BOOKING",
-  PARSED_PRICES_PROFILES: "PARSED_PRICES_PROFILES",
-  PARSED_PRICES_DATES: "PARSED_PRICES_PROFILES",
 }

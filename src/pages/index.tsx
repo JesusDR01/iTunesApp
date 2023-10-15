@@ -1,65 +1,31 @@
 import { Inter } from 'next/font/google';
 
-import { Post } from '@/src/modules/posts/domain/Post';
-import { getAllPosts } from '@/src/modules/posts/application/get-all/getAllPosts';
-import { PostMapper } from '@/src/modules/posts/application/mappers/PostMapper';
+import { PodcastsList } from 'sections/podcasts/PodcastList';
 
-import { createApiPostRepository } from '@/src/modules/posts/infra/ApiPostRepository';
-import { createApiUserRepository } from '@/src/modules/users/infra/ApiUserRepository';
-import { createApiCommentRepository } from '@/src/modules/comments/infra/ApiCommentRepository';
-
-import { usePagination } from '@/src/hooks/usePagination';
-
-import { PostsList } from '@/src/sections/posts/PostsList';
-import { Pagination } from '@/src/components/Pagination';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { TAG_TYPES } from '@lib/constants';
+import { listTopPodcasts } from '@lib/services/api/podcasts';
 
 const inter = Inter({ subsets: ['latin'] });
-const ITEMS_PER_PAGE = 5;
-const INITIAL_PAGE = 1;
 
-const postRepository = createApiPostRepository();
-const userRepository = createApiUserRepository();
-const commentRepository = createApiCommentRepository();
-
-interface HomePageProps {
-  posts: Post[];
-  page?: number;
-  limit?: number;
-}
-
-export default function HomePage({ posts, page = INITIAL_PAGE, limit = ITEMS_PER_PAGE }: HomePageProps): JSX.Element {
-	const [currentPosts, currentPage, setCurrentPage] = usePagination(
-		postRepository,
-		userRepository,
-		commentRepository,
-		posts,
-		page,
-		limit,
-	);
-
+export default function HomePage(): JSX.Element {
 	return (
 		<main className={inter.className}>
-			<PostsList posts={currentPosts}/>
-			<Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} />
+			<PodcastsList />
 		</main>
 	);
 }
 
-export async function getStaticProps() {
-	const page = INITIAL_PAGE;
-	const limit = ITEMS_PER_PAGE;
-	const posts = (await getAllPosts(
-		postRepository,
-		userRepository,
-		commentRepository,
-		PostMapper,
-	)()) as Post[];
+export const getStaticProps = async () => {
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery([TAG_TYPES.PODCASTS, 'top'], () =>
+		listTopPodcasts({}).then(res => res.data),
+	);
 
 	return {
+		revalidate: 10,
 		props: {
-			posts,
-			page,
-			limit,
+			dehydratedState: dehydrate(queryClient),
 		},
 	};
-}
+};

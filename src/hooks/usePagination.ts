@@ -1,40 +1,33 @@
 import { useState, useEffect } from 'react';
-import { Post } from '@/src/modules/posts/domain/Post';
-import { PostRepository } from '@/src/modules/posts/domain/PostRepository';
-import { UserRepository } from '@/src/modules/users/domain/UserRepository';
-import { CommentRepository } from '@/src/modules/comments/domain/CommentRepository';
-import { getPaginatedPosts } from '@/src/modules/posts/application/get-all/getPaginatedPosts';
-import { PostMapper } from '@/src/modules/posts/application/mappers/PostMapper';
-import { useLocalStorage } from '@/src/hooks/useLocalStorage';
+
+import { useLocalStorage } from 'hooks/useLocalStorage';
+import { PodcastRepository } from '@modules/podcasts/domain/PodcastRepository';
+import { getInfinitePodcasts } from '@modules/podcasts/application/top/getInfinitePodcasts';
+import { Podcasts } from '@modules/podcasts/domain/Podcast';
 
 export function usePagination(
-	postRepository: PostRepository,
-	userRepository: UserRepository,
-	commentRepository: CommentRepository,
-	initialPosts: Post[],
+	podcastsRepository: PodcastRepository,
+	initialPosts: Podcasts,
 	initialPage: number,
 	itemsPerPage: number,
-): [Post[], number, (page: number) => void] {
-	const [currentPosts, setCurrentPosts] = useState<Post[]>(initialPosts);
+): [Podcasts, number, (page: number) => void] {
+	const [currentPosts, setCurrentPodcasts] = useState<Podcasts>(initialPosts);
 	const [currentPage, setCurrentPage] = useLocalStorage<number>(
 		'currentPage',
 		initialPage,
 	);
 
-	const fetchMorePosts = async () => {
-		const fetchedPosts: Post[] = await getPaginatedPosts(
-			postRepository,
-			userRepository,
-			commentRepository,
-			PostMapper,
+	const fetchMorePodcasts = async () => {
+		const fetchedPosts: Podcasts = await getInfinitePodcasts(
+			podcastsRepository,
 			itemsPerPage,
 			currentPage,
 		)();
-		setCurrentPosts(fetchedPosts);
+		setCurrentPodcasts(fetchedPosts);
 	};
 
 	useEffect(() => {
-		fetchMorePosts();
+		fetchMorePodcasts();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentPage]);
 
