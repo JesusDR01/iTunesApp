@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import useInfiniteSearchPodcasts from '@modules/podcasts/application/search/useInfiniteSearchPodcasts';
 import { useInView } from 'react-intersection-observer';
-import {  useEffect,  useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useListTopPodcasts from '@modules/podcasts/application/top/useListTopPodcasts';
 import Typography from '@mui/material/Typography';
 import { useSearch } from 'context/search-context';
@@ -10,6 +10,7 @@ import { Loader } from 'components/Loader';
 import { OFFSET_STEP } from '@lib/services/api/consts';
 import { usePlayer } from 'context/player-context';
 import { PodcastRow } from './PodcastRow';
+import { PodcastHeader } from './PodcastHeader';
 
 const debounce = debouncer();
 
@@ -56,61 +57,27 @@ export function PodcastsList(): JSX.Element {
 		}
 	}, [inView, fetchNextPage, term, searchPodcasts?.pages, isFetchingNextPage]);
 
-
 	const {
-		useCurrentPodcast: [, setCurrentPodcast],
-	} = usePlayer({
-		handleNext: () => {
-			setCurrentPodcast(prev => {
-				const currentIndex = searchPodcasts?.pages.findIndex(page =>
-					page.podcasts.find(podcast => podcast.id === prev?.id),
-				);
+		useControls: [, update],
+	} = usePlayer();
 
-				if (currentIndex !== -1 && currentIndex !== undefined) {
-					const page = searchPodcasts?.pages[currentIndex];
-					const currentPodcastIndex = page?.podcasts.findIndex(
-						podcast => podcast.id === prev?.id,
-					);
-
-					if (currentPodcastIndex && page && currentPodcastIndex < page.podcasts?.length - 1) {
-						return page.podcasts[currentPodcastIndex + 1];
-					}
-				}
-
-				return prev;
+	useEffect(() => {
+		if (searchPodcasts !== undefined && searchPodcasts.pages.length > 0) {
+			update({
+				type: 'setPodcastList',
+				podcastList: searchPodcasts.pages.flatMap(pages => pages.podcasts),
 			});
-		},
-		handlePrev: () => {
-			setCurrentPodcast(prev => {
-				const currentIndex = searchPodcasts?.pages.findIndex(page =>
-					page.podcasts.find(podcast => podcast.id === prev?.id),
-				);
-
-				if (currentIndex !== -1 && currentIndex !== undefined) {
-					const page = searchPodcasts?.pages[currentIndex];
-					const currentPodcastIndex = page?.podcasts.findIndex(
-						podcast => podcast.id === prev?.id,
-					);
-
-					if (currentPodcastIndex && page && currentPodcastIndex > 0) {
-						return page.podcasts[currentPodcastIndex - 1];
-					}
-				}
-
-				return prev;
-			});
-		},
-	});
+		}
+	}, [searchPodcasts, update]);
 
 	if ((isSearchLoading && term !== '') || isTopPodcastsLoading)
 		return <Loader />;
 
 	return (
 		<div className="flex items-center justify-center flex-col max-w-[832px] m-auto min-h-[100vh]">
-			{/* <EnhancedTable /> */}
-
 			{searchPodcasts?.pages ? (
 				<>
+					<PodcastHeader />
 					{searchPodcasts.pages.flatMap(page => page.podcasts)?.length &&
 						searchPodcasts?.pages.map(page =>
 							page.podcasts.map(podcast => (

@@ -7,27 +7,27 @@ import React from 'react';
 
 export const PodcastRow = ({ podcast }: { podcast: Podcast }) => {
 	const {
-		usePlay: [isPlaying, setIsPlaying],
-		useCurrentPodcast: [currentPodcast, setCurrentPodcast],
+		useControls: [{ isPlaying, currentPodcast }, update],
 	} = usePlayer();
-
+	console.log(podcast, 'p');
 	return (
 		<div
 			className="flex justify-between items-center m-5 w-full gap-[20px]"
 			key={podcast.episodeUrl}
 		>
-			<span
-				onClick={() => {
-					if (!isPlaying) {
-            console.log(podcast.episodeUrl, 'podcastSelected')
-						setCurrentPodcast(podcast);
-						setIsPlaying(true);
-					} else {
-						setIsPlaying(false);
-					}
-				}}
-			>
+			<span>
 				<PlayPauseBtn
+					onClick={() => {
+						if (
+							!isPlaying ||
+							currentPodcast?.episodeUrl !== podcast.episodeUrl
+						) {
+							update({ type: 'play' });
+							update({ type: 'setPodcast', podcast: podcast });
+						} else {
+							update({ type: 'pause' });
+						}
+					}}
 					isPlaying={
 						currentPodcast?.episodeUrl === podcast.episodeUrl && isPlaying
 					}
@@ -53,13 +53,16 @@ export const PodcastRow = ({ podcast }: { podcast: Podcast }) => {
 							{podcast.author}
 						</Typography>
 					</div>
-					<div className="flex-[5_1_0] justify-center flex">
+					<div className="flex-[4_1_0] justify-center flex">
 						<Typography className="overflow-hidden text-ellipsis max-w-[210px]  break-words h-[45px] line-clamp-2  ">
 							{podcast.description}
 						</Typography>
 					</div>
 					<div className="flex-[1_1_0]">
 						<Typography>{podcast.released}</Typography>
+					</div>
+					<div className="flex-[1_1_0]">
+						<Typography>{podcast?.duration}</Typography>
 					</div>
 				</div>
 			</Link>

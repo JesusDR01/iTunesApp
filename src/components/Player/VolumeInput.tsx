@@ -16,7 +16,7 @@ export default function VolumeInput({
 	};
 
 	return (
-		<div className="relative w-full">
+		<div className="relative w-full min-w-[85px]">
 			<div className="absolute h-1 -top-[4px] left-0 right-0 group">
 				<input
 					aria-label="volume"

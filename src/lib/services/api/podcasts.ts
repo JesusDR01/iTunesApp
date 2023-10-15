@@ -1,7 +1,7 @@
 import { getRequest } from '@lib/util/http';
 import { PER_PAGE_DEFAULT, podcastController } from './consts';
 import { AxiosRequestConfig } from 'axios';
-import { PodcastDetails, Podcasts } from '@modules/podcasts/domain/Podcast';
+import {  Podcasts } from '@modules/podcasts/domain/Podcast';
 
 export type PodcastsSearchQuery = () => Promise<{
 	current_page: number;
@@ -14,7 +14,7 @@ export type PodcastsTopResponse = Awaited<ReturnType<PodcastsTopQuery>>;
 
 export type PodcastQuery = () => Promise<{
 	current_page: number;
-	podcastDetails: PodcastDetails;
+	podcastDetails: Podcasts;
   heroImage?: string
   podcastTitle?: string
 }>;

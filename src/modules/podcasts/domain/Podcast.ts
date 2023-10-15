@@ -7,6 +7,7 @@ export interface Podcast {
   description?: string;
 	released?: string
   imagePlayer?: string;
+  duration?: string;
 }
 
 export type Podcasts = Podcast[];
