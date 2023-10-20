@@ -30,6 +30,7 @@ export function Player(): JSX.Element {
 	const [duration, setDuration] = useState(0);
 	const [currrentProgress, setCurrrentProgress] = useState(0);
 	const [buffered, setBuffered] = useState(0);
+	const [isReady, setIsReady] = useState(false);
 
 	const durationDisplay = formatDurationDisplay(duration);
 	const elapsedDisplay = formatDurationDisplay(currrentProgress);
@@ -40,12 +41,12 @@ export function Player(): JSX.Element {
 		const timeout = setTimeout(() => {
 			audioRef.current?.play();
 		}, 500);
-
+		setIsReady(false);
 		return () => {
 			clearTimeout(timeout);
 		};
 	}, [currentPodcast, audioRef]);
-
+	console.log(currentPodcast)
 	const handleBufferProgress: ReactEventHandler<HTMLAudioElement> = e => {
 		const audio = e.currentTarget;
 		const dur = audio.duration;
@@ -70,7 +71,10 @@ export function Player(): JSX.Element {
 
 	return (
 		<div
-			className={`${inter.className}  fixed bottom-0 h-[110px] w-full  flex items-center justify-between bg-zinc-900 `}
+			className={clsx(
+				`${inter.className}  fixed bottom-0 h-[110px] w-full  flex items-center  bg-zinc-900 `,
+				currentPodcast?.episodeUrl ? 'justify-between' : 'justify-center',
+			)}
 		>
 			{currentPodcast && (
 				<audio
@@ -80,9 +84,10 @@ export function Player(): JSX.Element {
 					onDurationChange={e => setDuration(e.currentTarget.duration)}
 					onPlaying={() => update({ type: 'play' })}
 					onPause={() => update({ type: 'pause' })}
-					onEnded={() => update({ type: 'next' })}
+					onEnded={() => update({ type: 'end' })}
 					onCanPlay={e => {
 						e.currentTarget.volume = volume;
+						setIsReady(true);
 					}}
 					onTimeUpdate={e => {
 						setCurrrentProgress(e.currentTarget.currentTime);
@@ -93,13 +98,17 @@ export function Player(): JSX.Element {
 						update({ type: 'volume', volume: e.currentTarget.volume })
 					}
 				>
-					<source key={currentPodcast.episodeUrl} type="audio/mpeg" src={currentPodcast.episodeUrl} />
+					<source
+						key={currentPodcast.episodeUrl}
+						type="audio/mpeg"
+						src={currentPodcast.episodeUrl}
+					/>
 				</audio>
 			)}
 
-			<section className=" flex max-md:flex-col max-md:items-stretch max-md:gap-0">
+			<section className=" flex max-md:flex-col max-md:items-stretch max-md:gap-0 w-full mr-[30px] h-[110px]">
 				{currentPodcast?.imagePlayer && (
-					<div className="flex flex-col items-stretch h-full ">
+					<div className="flex flex-col items-stretch h-full w-[110px] ">
 						<img
 							loading="lazy"
 							src={currentPodcast.imagePlayer}
@@ -109,7 +118,7 @@ export function Player(): JSX.Element {
 					</div>
 				)}
 				<div className="flex flex-col items-stretch w-[22%] ml-5 max-md:w-full">
-					<div className="items-start flex flex-col my-auto max-md:mt-12 w-[277px] overflow-hidden  ">
+					<div className="items-start flex flex-col my-auto max-md:mt-12 pr-[59px] w-full overflow-hidden  ">
 						<h2 className="text-white text-base font-medium overflow-hidden text-ellipsis w-full whitespace-nowrap h-[20px] ">
 							{currentPodcast?.title}
 						</h2>
@@ -177,6 +186,7 @@ export function Player(): JSX.Element {
 								</defs>
 							</svg>
 							<PlayPauseBtn
+								isLoading={Boolean(!isReady && currentPodcast?.episodeUrl)}
 								onClick={() =>
 									currentPodcast &&
 									update({ type: isPlaying ? 'pause' : 'play' })

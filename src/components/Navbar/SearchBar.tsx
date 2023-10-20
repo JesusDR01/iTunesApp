@@ -1,12 +1,17 @@
-
-
 import InputBase from '@mui/material/InputBase';
 import { useSearch } from 'context/search-context';
+import { useEffect, useRef } from 'react';
 
 export function Searchbar(): JSX.Element {
 	const {
 		useSearch: [search, setSearch],
 	} = useSearch();
+	const inputRef = useRef<HTMLInputElement | null>();
+	useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current?.focus();
+		}
+	}, [inputRef]);
 
 	return (
 		<div className="w-full  bg-[#1a1a1a]  flex items-center h-[50px] !text-white placeholder:text-white relative rounded-[15px]  px-[20px]">
@@ -25,6 +30,7 @@ export function Searchbar(): JSX.Element {
 			</svg>
 
 			<InputBase
+				inputRef={inputRef}
 				value={search}
 				onChange={e => setSearch(e.target.value)}
 				placeholder="podcast"

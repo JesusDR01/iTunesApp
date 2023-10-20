@@ -31,13 +31,13 @@ export default async function handler(
       return timeDifference > 0
     }).sort((prevEpisode, currentEpisode) => new Date(currentEpisode.releaseDate).getTime() - new Date(prevEpisode.releaseDate).getTime() ).map(episode => ({
 			id: episode.collectionId.toString(),
-      
 			title: episode.trackName,
 			author: episode.collectionName,
       episodeUrl: episode.episodeUrl,
 			description: episode.description,
       released: formatRelease(episode.releaseDate),
       duration: episode.trackTimeMillis ? new Date(episode.trackTimeMillis).toISOString().substr(11, 8) : '',
+      originalDuration: episode.trackTimeMillis,
 			image: episode.artworkUrl60,
       imagePlayer: episode.artworkUrl160,
       

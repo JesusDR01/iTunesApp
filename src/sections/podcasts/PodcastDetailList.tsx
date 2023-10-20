@@ -1,5 +1,5 @@
 import { useInView } from 'react-intersection-observer';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useInfiniteGetPodcast from '@modules/podcasts/application/get/useInfiniteGetPodcast';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { PodcastHero } from './PodcastHero';
@@ -9,6 +9,8 @@ import { PodcastRow } from './PodcastRow';
 import { PlayPauseBtn } from 'components/PlayPauseBtn';
 import { usePlayer } from 'context/player-context';
 import { PodcastHeader } from './PodcastHeader';
+import { Order } from 'components/Order';
+import { Podcasts } from '@modules/podcasts/domain/Podcast';
 
 export function PodcastsDetailList({
 	podcastId,
@@ -22,7 +24,6 @@ export function PodcastsDetailList({
 	} = useInfiniteGetPodcast({
 		podcastId,
 	});
-	console.log(podcastDetails, 'podcastDetails');
 
 	const { ref: nextPageRef, inView } = useInView({
 		threshold: 0,
@@ -42,16 +43,18 @@ export function PodcastsDetailList({
 		useControls: [{ isPlaying, currentPodcast }, update],
 	} = usePlayer();
 
+	const [sort, setSort] = useState('Title');
+
 	useEffect(() => {
 		if (podcastDetails !== undefined && podcastDetails.pages.length > 0) {
 			update({
 				type: 'setPodcastList',
 				podcastList: podcastDetails.pages.flatMap(
-					pages => pages.podcastDetails,
+					pages => sortFunction(pages.podcastDetails, sort),
 				),
 			});
 		}
-	}, [podcastDetails, update]);
+	}, [podcastDetails, update, sort]);
 
 	return (
 		<div className="w-full">
@@ -79,22 +82,48 @@ export function PodcastsDetailList({
 								{podcastDetails.pages[0]?.podcastTitle}{' '}
 								<VerifiedIcon htmlColor="#2a94e2" />
 							</h1>
+							<Order
+								duration={podcastDetails.pages
+									.flatMap(page => page.podcastDetails)
+									.some(podcast => podcast.duration)}
+								setSort={setSort}
+								className="absolute right-0"
+							/>
 						</div>
 					</>
 				)}
 				<PodcastHeader className="mt-[20px]" showDuration />
 				{podcastDetails?.pages.flatMap(page => page.podcastDetails)?.length &&
 					podcastDetails?.pages.map(page =>
-						page.podcastDetails.map(podcastDetail => (
-							<PodcastRow
-								podcast={podcastDetail}
-								key={podcastDetail.episodeUrl}
-							/>
-						)),
+						sortFunction(page.podcastDetails, sort)
+							.map(podcastDetail => (
+								<PodcastRow
+									podcast={podcastDetail}
+									key={podcastDetail.episodeUrl}
+								/>
+							)),
 					)}
 				{isFetchingNextPage && <Loader />}
 				<div ref={nextPageRef}>.</div>
 			</div>
 		</div>
 	);
+}
+
+function sortFunction(podcastDetails: Podcasts, sort: string){
+	return podcastDetails.map((podcast, index) => ({...podcast, index}))
+							.sort((a, b) => {
+								// console.log(a.duration);
+								if (sort === 'Title') return a.title.localeCompare(b.title);
+								if (sort === 'Topic' && a.description && b.description)
+									return a.description.localeCompare(b.description);
+
+								if (
+									sort === 'Duration' &&
+									a.originalDuration &&
+									b.originalDuration
+								)
+									return a.originalDuration - b.originalDuration;
+								return a.index;
+							})
 }

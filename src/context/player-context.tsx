@@ -29,6 +29,7 @@ export type Action =
 	| { type: 'loopMode'; loopMode: 'all' | 'one' | 'none' }
 	| { type: 'randomMode'; randomMode: boolean }
 	| { type: 'next' }
+	| { type: 'end' }
 	| { type: 'prev' }
 	| { type: 'volume'; volume: number };
 
@@ -133,6 +134,39 @@ export const PlayerContextProvider = ({
 										loopMode === 'one' || loopMode === 'all'
 											? ('all' as const)
 											: ('none' as const),
+								};
+							}
+
+							return {
+								...state,
+							};
+						}
+						case 'end': {
+							const { podcastList, currentPodcast, randomMode, loopMode } =
+								state;
+
+								if (loopMode === 'one' && audioRef.current) {
+									audioRef.current.currentTime = 0;
+									audioRef.current.play();
+									return {
+										...state,
+									};
+								}
+
+							if (podcastList && currentPodcast) {
+								const currentPodcastIndex = podcastList.findIndex(
+									podcast => podcast.episodeUrl === currentPodcast?.episodeUrl,
+								);
+
+								const nextPodcast =
+									podcastList[
+										randomMode
+											? Math.floor(Math.random() * podcastList.length)
+											: currentPodcastIndex + 1
+									];
+								return {
+									...state,
+									currentPodcast: nextPodcast || currentPodcast,
 								};
 							}
 
