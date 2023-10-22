@@ -13,7 +13,6 @@ export default async function handler(
 		const {
 			feed: { entry: rawPodcasts },
 		}: RawPodcasts = await podcastsResponse.json();
-		console.log(rawPodcasts)
 		const podcasts = rawPodcasts.map(podcast => ({
 			id: podcast.id.attributes['im:id'],
 			title: podcast.title.label,

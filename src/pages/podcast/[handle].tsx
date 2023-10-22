@@ -29,7 +29,6 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
 
 export const getStaticProps: GetStaticProps = async context => {
 	const handle = `${context.params?.handle}` as string;
-	console.log(handle);
 
 	const queryClient = new QueryClient();
 	await queryClient.prefetchQuery([TAG_TYPES.PODCASTS, handle], () =>

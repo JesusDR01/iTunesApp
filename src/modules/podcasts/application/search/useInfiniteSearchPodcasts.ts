@@ -21,7 +21,6 @@ function useInfiniteSearchPodcasts({
 	return useInfiniteQuery(
 		[TAG_TYPES.PODCASTS, term],
 		(data) => {
-			console.log(data, 'data')
 		return	searchPodcasts({ term, pageParam: { offset: data?.pageParam?.offset || offset } }).then(res => res.data)
 		},
 		{

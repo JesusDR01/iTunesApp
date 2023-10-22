@@ -46,7 +46,6 @@ export function Player(): JSX.Element {
 			clearTimeout(timeout);
 		};
 	}, [currentPodcast, audioRef]);
-	// console.log(currentPodcast);
 	const handleBufferProgress: ReactEventHandler<HTMLAudioElement> = e => {
 		const audio = e.currentTarget;
 		const dur = audio.duration;

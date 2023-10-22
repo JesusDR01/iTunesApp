@@ -7,7 +7,6 @@ import { BackIcon } from './BackIcon';
 export function Navbar(): JSX.Element {
 	const router = useRouter();
 
-	console.log(router.asPath);
 	return (
 		<div className="relative w-[842px] m-auto h-[100px] flex bg-transparent items-center gap-[15px] ">
 			{router.asPath !== '/' && <BackIcon />}
