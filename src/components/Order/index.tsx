@@ -23,7 +23,7 @@ export const Order = ({
 
 	return (
 		<div className={clsx('cursor-default ', className)}>
-			<span className="text-white " onClick={handleClick}>
+			<span className="text-white " onClick={handleClick} data-testid="sort">
 				Order By <KeyboardArrowDownIcon />
 			</span>
 			<Menu

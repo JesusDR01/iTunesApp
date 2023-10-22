@@ -1,4 +1,3 @@
-
 describe('Player', () => {
 	beforeEach(() => {
 		//Init the podcast
@@ -49,6 +48,41 @@ describe('Player', () => {
 		cy.get(
 			'[data-testid="podcast-row"] ~ [data-testid="podcast-row"] [data-testid="PauseIcon"] ',
 		).should('not.exist');
+	});
+	it('Should go to next / previous podcast after sorting', () => {
+		const testForwardBackward = () => {
+			cy.get('[data-testid="next"]').click().wait(5000);
+			cy.get(
+				'[data-testid="podcast-row"] ~ [data-testid="podcast-row"] [data-testid="PauseIcon"] ',
+			).should('exist');
+			cy.get('[data-testid="prev"]').click().wait(2000);
+			cy.get(
+				'[data-testid="podcast-row"] ~ [data-testid="podcast-row"] [data-testid="PauseIcon"] ',
+			).should('not.exist');
+		};
+
+		testForwardBackward();
+
+		const sortAndPlay = () => {
+			cy.get('[data-testid="sort"]').click().wait(1000);
+			cy.get('[data-sort="Title"]').click().wait(3000);
+			cy.get('[data-testid="podcast-row"] [data-testid="play-pause"]')
+				.first()
+				.click({ force: true })
+				.wait(2000);
+		};
+
+		sortAndPlay();
+		testForwardBackward();
+		cy.visit('http://localhost:3000/podcast/1535809341');
+		cy.get('[data-testid="play-pause"]').wait(2000);
+		cy.get('span[data-testid="play-pause"]')
+			.first()
+			.click({ force: true })
+			.wait(2000);
+		testForwardBackward();
+		sortAndPlay();
+		testForwardBackward();
 	});
 	it('Should enable / disable random mode', () => {
 		cy.get('[data-testid="random"]').click();
