@@ -18,7 +18,7 @@ export function PodcastsDetailList({
 	});
 	const { podcastTitle, podcastDetails } = data || {};
 	const [currentPodcasts, setCurrentPodcasts] =
-		useState<typeof podcastDetails>(undefined);
+		useState<typeof podcastDetails>(podcastDetails);
 
 	const {
 		useControls: [{ isPlaying, currentPodcast }, update],
@@ -27,7 +27,7 @@ export function PodcastsDetailList({
 	const [sort, setSort] = useState('Title');
 
 	useEffect(() => {
-		setCurrentPodcasts(podcastDetails);
+		if (!currentPodcasts) return setCurrentPodcasts(podcastDetails);
 
 		update({
 			type: 'setPodcastList',
@@ -40,7 +40,8 @@ export function PodcastsDetailList({
 			setSort(sort);
 			setCurrentPodcasts(prev => {
 				if (prev !== undefined) {
-					const currentPodcastsCopy = { ...prev };
+					const currentPodcastsCopy = [...prev];
+					// debugger;
 					currentPodcastsCopy.sort((a, b) => {
 						if (sort === 'Title') return a.title.localeCompare(b.title);
 						if (sort === 'Topic' && a.description && b.description)
@@ -69,7 +70,7 @@ export function PodcastsDetailList({
 	return (
 		<div className="w-full" key={sort}>
 			<div className="flex items-center justify-center flex-col max-w-[832px] m-auto pb-[100px]">
-				{podcastDetails && (
+				{currentPodcasts && (
 					<>
 						<PodcastHero />
 
@@ -81,7 +82,7 @@ export function PodcastsDetailList({
 									} else {
 										update({
 											type: 'setPodcast',
-											podcast: podcastDetails[0],
+											podcast: currentPodcasts[0],
 										});
 									}
 								}}
@@ -92,7 +93,7 @@ export function PodcastsDetailList({
 								{podcastTitle} <VerifiedIcon htmlColor="#2a94e2" />
 							</h1>
 							<Order
-								duration={podcastDetails.some(podcast => podcast.duration)}
+								duration={currentPodcasts.some(podcast => podcast.duration)}
 								handleSort={handleSort}
 								className="absolute right-0"
 							/>
