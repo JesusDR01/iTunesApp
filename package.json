@@ -29,7 +29,7 @@
 		"axios": "^1.5.1",
 		"clsx": "^2.0.0",
 		"i18next": "^23.5.1",
-		"icons-material": "link:@mui/icons-material",
+		"icons-material": "@mui/icons-material",
 		"jest-transform-stub": "^2.0.0",
 		"next": "13.3.0",
 		"next-i18next": "^14.0.3",
