@@ -1,15 +1,15 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Menu, MenuItem } from '@mui/material';
 import clsx from 'clsx';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 
 export const Order = ({
 	className,
-	setSort,
 	duration,
+	handleSort,
 }: {
-	setSort: Dispatch<SetStateAction<string>>;
 	duration: boolean;
+	handleSort: (sort: string) => void;
 	className?: string;
 }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -36,7 +36,7 @@ export const Order = ({
 				}}
 				onClick={e => {
 					if (e.target instanceof HTMLLIElement) {
-						setSort(e.target.dataset.sort?.toString() || '');
+						handleSort(e.target.dataset.sort?.toString() || '');
 						setAnchorEl(null);
 					}
 				}}

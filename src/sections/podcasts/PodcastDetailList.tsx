@@ -1,5 +1,5 @@
 import { useInView } from 'react-intersection-observer';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useInfiniteGetPodcast from '@modules/podcasts/application/get/useInfiniteGetPodcast';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { PodcastHero } from './PodcastHero';
@@ -11,12 +11,21 @@ import { usePlayer } from 'context/player-context';
 import { PodcastHeader } from './PodcastHeader';
 import { Order } from 'components/Order';
 import { Podcasts } from '@modules/podcasts/domain/Podcast';
+import { InfiniteData } from '@tanstack/react-query';
 
 export function PodcastsDetailList({
 	podcastId,
 }: {
 	podcastId: string;
 }): JSX.Element {
+	const [currentPodcasts, setCurrentPodcasts] = useState<
+		| InfiniteData<{
+				current_page: number;
+				podcastDetails: Podcasts;
+		  }>
+		| undefined
+	>(undefined);
+
 	const {
 		data: podcastDetails,
 		isFetchingNextPage,
@@ -46,18 +55,57 @@ export function PodcastsDetailList({
 	const [sort, setSort] = useState('Title');
 
 	useEffect(() => {
-		if (podcastDetails !== undefined && podcastDetails.pages.length > 0) {
-			update({
-				type: 'setPodcastList',
-				podcastList: podcastDetails.pages.flatMap(
-					pages => sortFunction(pages.podcastDetails, sort),
-				),
+		setCurrentPodcasts(podcastDetails);
+
+		update({
+			type: 'setPodcastList',
+			podcastList:
+				currentPodcasts?.pages.flatMap(pages => pages.podcastDetails) || [],
+		});
+	}, [currentPodcasts, update, podcastDetails]);
+
+	const handleSort = useCallback(
+		(sort: string) => {
+			setSort(sort);
+			setCurrentPodcasts(prev => {
+				if (prev !== undefined) {
+					const currentPodcastsCopy = { ...prev };
+					currentPodcastsCopy.pages.forEach(page => {
+						page.podcastDetails.sort((a, b) => {
+							if (sort === 'Title') return a.title.localeCompare(b.title);
+							if (sort === 'Topic' && a.description && b.description)
+								return a.description.localeCompare(b.description);
+
+							if (
+								sort === 'Duration' &&
+								a.originalDuration &&
+								b.originalDuration
+							)
+								return a.originalDuration - b.originalDuration;
+
+							const original = podcastDetails?.pages.flatMap(
+								page => page.podcastDetails,
+							);
+							const aIndex =
+								original?.findIndex(
+									podcast => podcast.episodeUrl === a.episodeUrl,
+								) || 0;
+							const bIndex =
+								original?.findIndex(
+									podcast => podcast.episodeUrl === b.episodeUrl,
+								) || 0;
+							return aIndex - bIndex;
+						});
+					});
+					return currentPodcastsCopy;
+				}
 			});
-		}
-	}, [podcastDetails, update, sort]);
+		},
+		[setSort, podcastDetails],
+	);
 
 	return (
-		<div className="w-full">
+		<div className="w-full" key={sort}>
 			<div className="flex items-center justify-center flex-col max-w-[832px] m-auto">
 				{podcastDetails?.pages[0] && (
 					<>
@@ -86,7 +134,7 @@ export function PodcastsDetailList({
 								duration={podcastDetails.pages
 									.flatMap(page => page.podcastDetails)
 									.some(podcast => podcast.duration)}
-								setSort={setSort}
+								handleSort={handleSort}
 								className="absolute right-0"
 							/>
 						</div>
@@ -94,36 +142,17 @@ export function PodcastsDetailList({
 				)}
 				<PodcastHeader className="mt-[20px]" showDuration />
 				{podcastDetails?.pages.flatMap(page => page.podcastDetails)?.length &&
-					podcastDetails?.pages.map(page =>
-						sortFunction(page.podcastDetails, sort)
-							.map(podcastDetail => (
-								<PodcastRow
-									podcast={podcastDetail}
-									key={podcastDetail.episodeUrl}
-								/>
-							)),
+					currentPodcasts?.pages.map(page =>
+						page.podcastDetails.map(podcastDetail => (
+							<PodcastRow
+								podcast={podcastDetail}
+								key={podcastDetail.episodeUrl}
+							/>
+						)),
 					)}
 				{isFetchingNextPage && <Loader />}
 				<div ref={nextPageRef}>.</div>
 			</div>
 		</div>
 	);
-}
-
-function sortFunction(podcastDetails: Podcasts, sort: string){
-	return podcastDetails.map((podcast, index) => ({...podcast, index}))
-							.sort((a, b) => {
-								// console.log(a.duration);
-								if (sort === 'Title') return a.title.localeCompare(b.title);
-								if (sort === 'Topic' && a.description && b.description)
-									return a.description.localeCompare(b.description);
-
-								if (
-									sort === 'Duration' &&
-									a.originalDuration &&
-									b.originalDuration
-								)
-									return a.originalDuration - b.originalDuration;
-								return a.index;
-							})
 }

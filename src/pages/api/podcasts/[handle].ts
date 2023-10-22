@@ -9,7 +9,7 @@ export default async function handler(
 ) {
 	try {
     
-    const DEFAULT_LIMIT = 100;
+    const DEFAULT_LIMIT = 1000;
     const DEFAULT_OFFSET = 0;
     
     const {
@@ -25,8 +25,8 @@ export default async function handler(
       resultCount: number;
       results: RawPodcastDetail[];
     } = await episodesResponse.json();
-    console.log(rawEpisodes, 'rawEpisodes')
-		const podcastDetails: Podcasts = rawEpisodes.filter(episode => {
+
+    const podcastDetails: Podcasts = rawEpisodes.filter(episode => {
       const timeDifference = Date.now() - new Date(episode.releaseDate).getTime()
       return timeDifference > 0
     }).sort((prevEpisode, currentEpisode) => new Date(currentEpisode.releaseDate).getTime() - new Date(prevEpisode.releaseDate).getTime() ).map(episode => ({

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import useInfiniteSearchPodcasts from '@modules/podcasts/application/search/useInfiniteSearchPodcasts';
 import { useInView } from 'react-intersection-observer';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useListTopPodcasts from '@modules/podcasts/application/top/useListTopPodcasts';
 import Typography from '@mui/material/Typography';
 import { useSearch } from 'context/search-context';
@@ -14,6 +14,7 @@ import { PodcastHeader } from './PodcastHeader';
 
 import { Order } from 'components/Order';
 import { Podcasts } from '@modules/podcasts/domain/Podcast';
+import { InfiniteData } from '@tanstack/react-query';
 
 const debounce = debouncer();
 
@@ -27,6 +28,13 @@ export function PodcastsList(): JSX.Element {
 		useListTopPodcasts({ enabled: term === '' });
 
 	const offsetRef = useRef(0);
+	const [currentPodcasts, setCurrentPodcasts] = useState<
+		| InfiniteData<{
+				current_page: number;
+				podcasts: Podcasts;
+		  }>
+		| undefined
+	>(undefined);
 
 	useEffect(() => {
 		debounce.exec(() => {
@@ -67,16 +75,48 @@ export function PodcastsList(): JSX.Element {
 	const [sort, setSort] = useState('Title');
 
 	useEffect(() => {
-		if (searchPodcasts !== undefined && searchPodcasts.pages.length > 0) {
-			update({
-				type: 'setPodcastList',
-				podcastList: searchPodcasts.pages.flatMap(pages =>
-					sortFunction(pages.podcasts, sort),
-				),
-			});
-		}
-	}, [searchPodcasts, update, sort]);
+		setCurrentPodcasts(searchPodcasts);
+		
+		update({
+			type: 'setPodcastList',
+			podcastList: currentPodcasts?.pages.flatMap(pages => pages.podcasts) || [],
+		});
+	}, [currentPodcasts, update, searchPodcasts]);
 
+	const handleSort = useCallback(
+		(sort: string) => {
+			setSort(sort);
+			setCurrentPodcasts(prev => {
+				if (prev !== undefined) {
+					const currentPodcastsCopy = { ...prev };
+					currentPodcastsCopy.pages.forEach(page => {
+						page.podcasts.sort((a, b) => {
+							if (sort === 'Title') {
+								return a.title.localeCompare(b.title);
+							}
+							if (sort === 'Topic' && a.description && b.description) {
+								return a.description.localeCompare(b.description);
+							}
+							const original = searchPodcasts?.pages.flatMap(
+								page => page.podcasts,
+							);
+							const aIndex =
+								original?.findIndex(
+									podcast => podcast.episodeUrl === a.episodeUrl,
+								) || 0;
+							const bIndex =
+								original?.findIndex(
+									podcast => podcast.episodeUrl === b.episodeUrl,
+								) || 0;
+							return aIndex - bIndex;
+						});
+					});
+					return currentPodcastsCopy;
+				}
+			});
+		},
+		[setSort, searchPodcasts],
+	);
 	if ((isSearchLoading && term !== '') || isTopPodcastsLoading)
 		return <Loader />;
 
@@ -86,19 +126,19 @@ export function PodcastsList(): JSX.Element {
 				className="flex items-center justify-center flex-col max-w-[832px] m-auto min-h-[100vh]"
 				key={sort}
 			>
-				{searchPodcasts?.pages ? (
+				{currentPodcasts?.pages ? (
 					<>
 						<Order
-							duration={searchPodcasts.pages
+							duration={currentPodcasts.pages
 								.flatMap(page => page.podcasts)
 								.some(podcast => podcast.duration)}
-							setSort={setSort}
+							handleSort={handleSort}
 							className="self-end h-[60px] flex items-center"
 						/>
 						<PodcastHeader />
-						{searchPodcasts.pages.flatMap(page => page.podcasts)?.length &&
-							searchPodcasts?.pages.map(page =>
-								sortFunction(page.podcasts, sort).map(podcast => (
+						{currentPodcasts?.pages.flatMap(page => page.podcasts)?.length &&
+							currentPodcasts?.pages.map(page =>
+								page.podcasts.map(podcast => (
 									<PodcastRow podcast={podcast} key={podcast.episodeUrl} />
 								)),
 							)}
@@ -113,6 +153,7 @@ export function PodcastsList(): JSX.Element {
 								className="w-full"
 								href={`/podcast/${podcast.id}`}
 								key={podcast.id}
+								data-testid="podcast-link"
 							>
 								<div className="flex justify-between items-center m-5">
 									<div className="flex gap-[20px] items-center">
@@ -146,15 +187,4 @@ export function PodcastsList(): JSX.Element {
 			</div>
 		</>
 	);
-}
-
-function sortFunction(podcastDetails: Podcasts, sort: string) {
-	return podcastDetails
-		.map((podcast, index) => ({ ...podcast, index }))
-		.sort((a, b) => {
-			if (sort === 'Title') return a.title.localeCompare(b.title);
-			if (sort === 'Topic' && a.description && b.description)
-				return a.description.localeCompare(b.description);
-			return a.index;
-		});
 }

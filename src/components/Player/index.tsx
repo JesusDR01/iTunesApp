@@ -46,7 +46,7 @@ export function Player(): JSX.Element {
 			clearTimeout(timeout);
 		};
 	}, [currentPodcast, audioRef]);
-	console.log(currentPodcast)
+	// console.log(currentPodcast);
 	const handleBufferProgress: ReactEventHandler<HTMLAudioElement> = e => {
 		const audio = e.currentTarget;
 		const dur = audio.duration;
@@ -133,6 +133,7 @@ export function Player(): JSX.Element {
 							className={`${inter.className} gap-[20px] flex items-center justify-center`}
 						>
 							<svg
+								data-testid="random"
 								width="24"
 								height="24"
 								viewBox="0 0 24 24"
@@ -160,6 +161,7 @@ export function Player(): JSX.Element {
 								</defs>
 							</svg>
 							<svg
+								data-testid="prev"
 								onClick={() => update({ type: 'prev' })}
 								className="cursor-pointer"
 								width="24"
@@ -185,17 +187,20 @@ export function Player(): JSX.Element {
 									</clipPath>
 								</defs>
 							</svg>
-							<PlayPauseBtn
-								isLoading={Boolean(!isReady && currentPodcast?.episodeUrl)}
-								onClick={() =>
-									currentPodcast &&
-									update({ type: isPlaying ? 'pause' : 'play' })
-								}
-								isPlaying={isPlaying}
-								className="bg-[#5c67de] min-h-[50px] min-w-[50px] rounded-full text-white self-start  left-0 top-0"
-							/>
+							<span data-testid="player">
+								<PlayPauseBtn
+									isLoading={Boolean(!isReady && currentPodcast?.episodeUrl)}
+									onClick={() =>
+										currentPodcast &&
+										update({ type: isPlaying ? 'pause' : 'play' })
+									}
+									isPlaying={isPlaying}
+									className="bg-[#5c67de] min-h-[50px] min-w-[50px] rounded-full text-white self-start  left-0 top-0"
+								/>
+							</span>
 
 							<svg
+								data-testid="next"
 								onClick={() => update({ type: 'next' })}
 								width="24"
 								height="24"
@@ -242,6 +247,7 @@ export function Player(): JSX.Element {
 								)}
 							>
 								<svg
+									data-testid="loop"
 									width="24"
 									height="24"
 									viewBox="0 0 24 24"
@@ -273,7 +279,10 @@ export function Player(): JSX.Element {
 						</div>
 
 						<div className="self-center flex grow shrink-0 basis-auto gap-3.5 my-auto max-md:max-w-full max-md:flex-wrap max-md:justify-center relative items-center">
-							<div className="text-white text-base font-medium self-stretch">
+							<div
+								data-testid="elapsed"
+								className="text-white text-base font-medium self-stretch"
+							>
 								{elapsedDisplay}
 							</div>
 							<div className="relative w-full">
@@ -295,7 +304,10 @@ export function Player(): JSX.Element {
 									<div className="bg-white bg-opacity-30 self-center flex  h-[5px] flex-col my-auto rounded-xl" />
 								)}
 							</div>
-							<div className="text-white text-opacity-30 text-base font-medium self-stretch">
+							<div
+								data-testid="duration"
+								className="text-white text-opacity-30 text-base font-medium self-stretch"
+							>
 								{durationDisplay}
 							</div>
 						</div>

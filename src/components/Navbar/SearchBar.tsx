@@ -30,6 +30,8 @@ export function Searchbar(): JSX.Element {
 			</svg>
 
 			<InputBase
+				inputMode="search"
+				role="search"
 				inputRef={inputRef}
 				value={search}
 				onChange={e => setSearch(e.target.value)}

@@ -12,6 +12,7 @@ export const PodcastRow = ({ podcast }: { podcast: Podcast }) => {
 	} = usePlayer();
 	return (
 		<div
+			data-testid="podcast-row"
 			className="flex justify-between items-center m-5 w-full gap-[20px]"
 			key={podcast.episodeUrl}
 		>

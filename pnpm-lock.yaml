@@ -14,6 +14,7 @@ specifiers:
   '@testing-library/react': ^14.0.0
   '@testing-library/user-event': ^14.4.3
   '@types/jest': ^29.5.1
+  '@types/mocha': ^10.0.3
   '@types/node': 18.15.11
   '@types/react': 18.0.37
   '@types/react-dom': 18.0.11
@@ -34,9 +35,9 @@ specifiers:
   icons-material: link:@mui/icons-material
   jest: ^29.5.0
   jest-environment-jsdom: ^29.5.0
+  jest-transform-stub: ^2.0.0
   jsdom: ^21.1.1
   lint-staged: ^13.2.1
-  material-ui-search-bar: ^1.0.0
   next: 13.3.0
   next-i18next: ^14.0.3
   postcss: 8.4.22
@@ -61,7 +62,7 @@ dependencies:
   clsx: 2.0.0
   i18next: 23.5.1
   icons-material: link:@mui/icons-material
-  material-ui-search-bar: 1.0.0_react@18.2.0
+  jest-transform-stub: 2.0.0
   next: 13.3.0_biqbaboplfbrettd7655fr4n2y
   next-i18next: 14.0.3_jobv3pkmttblqrn2o4wchpyzwq
   react: 18.2.0
@@ -77,6 +78,7 @@ devDependencies:
   '@testing-library/react': 14.0.0_biqbaboplfbrettd7655fr4n2y
   '@testing-library/user-event': 14.4.3_zbypwrtvpjrvnfnw5wxfpjfsci
   '@types/jest': 29.5.1
+  '@types/mocha': 10.0.3
   '@types/node': 18.15.11
   '@types/react': 18.0.37
   '@types/react-dom': 18.0.11
@@ -1726,6 +1728,10 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
+  /@types/mocha/10.0.3:
+    resolution: {integrity: sha512-RsOPImTriV/OE4A9qKjMtk2MnXiuLLbcO3nCXK+kvq4nr0iMfFgpjaX3MPLb6f7+EL1FGSelYvuJMV6REH+ZPQ==}
+    dev: true
+
   /@types/node/14.18.42:
     resolution: {integrity: sha512-xefu+RBie4xWlK8hwAzGh3npDz/4VhF6icY/shU+zv/1fNn+ZVG7T7CRwe9LId9sAYRPxI+59QBPuKL3WpyGRg==}
     dev: true
@@ -2551,10 +2557,6 @@ packages:
   /cjs-module-lexer/1.2.2:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: true
-
-  /classnames/2.3.2:
-    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
-    dev: false
 
   /clean-stack/2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
@@ -4997,6 +4999,10 @@ packages:
       - supports-color
     dev: true
 
+  /jest-transform-stub/2.0.0:
+    resolution: {integrity: sha512-lspHaCRx/mBbnm3h4uMMS3R5aZzMwyNpNIJLXj4cEsV0mIUtS4IjYJLSoyjRCtnxb6RIGJ4NL2quZzfIeNhbkg==}
+    dev: false
+
   /jest-util/29.5.0:
     resolution: {integrity: sha512-RYMgG/MTadOr5t8KdhejfvUU82MxsCu5MF6KuDUHl+NuwzUt+Sm6jJWxTJVrDR1j5M/gJVCPKQEpWXY+yIQ6lQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -5515,18 +5521,6 @@ packages:
   /map-stream/0.1.0:
     resolution: {integrity: sha512-CkYQrPYZfWnu/DAmVCpTSX/xHpKZ80eKh2lAkyA6AJTef6bW+6JpbQZN5rofum7da+SyN1bi5ctTm+lTfcCW3g==}
     dev: true
-
-  /material-ui-search-bar/1.0.0_react@18.2.0:
-    resolution: {integrity: sha512-lCNuzMLPBVukVAkcnYKLXHneozsuKZREZNOcc8z9S9scXHqxJzhC9hOS3OC3/YJ+NJEB5lZB9zg1gryBaXEu8w==}
-    peerDependencies:
-      '@material-ui/core': ^4.0.0
-      '@material-ui/icons': ^4.0.0
-      react: ^16.8.0
-    dependencies:
-      classnames: 2.3.2
-      prop-types: 15.8.1
-      react: 18.2.0
-    dev: false
 
   /meow/8.1.2:
     resolution: {integrity: sha512-r85E3NdZ+mpYk1C6RjPFEMSE+s1iZMuHtsHAqY0DT3jZczl0diWUZ8g6oU7h0M9cD2EL+PzaYghhCLzR0ZNn5Q==}

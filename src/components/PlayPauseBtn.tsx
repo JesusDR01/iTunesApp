@@ -26,7 +26,7 @@ export const PlayPauseBtn = ({
 		);
 	}
 	return (
-		<span onClick={onClick} className="cursor-pointer">
+		<span onClick={onClick} className="cursor-pointer" data-testid="play-pause">
 			{isPlaying ? (
 				<PauseIcon className={classNamePause || className} />
 			) : (
