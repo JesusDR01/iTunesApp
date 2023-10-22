@@ -13,7 +13,6 @@ export type PodcastsTopQuery = () => Promise<Podcasts>;
 export type PodcastsTopResponse = Awaited<ReturnType<PodcastsTopQuery>>;
 
 export type PodcastQuery = () => Promise<{
-	current_page: number;
 	podcastDetails: Podcasts;
   heroImage?: string
   podcastTitle?: string
@@ -41,16 +40,12 @@ export const searchPodcasts = async ({
 
   export const getPodcast = async ({
     podcastId,
-    pageParam,
     query = {},
   }: {
     podcastId: string;
-    pageParam?: { offset: number };
     query?: AxiosRequestConfig;
   }) =>
     getRequest<PodcastResponse>(
-      `${podcastController}/${podcastId}?offset=${
-        pageParam?.offset ?? 0
-      }&limit=${PER_PAGE_DEFAULT}`,
+      `${podcastController}/${podcastId}`,
       query,
     );

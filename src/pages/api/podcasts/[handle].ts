@@ -9,17 +9,12 @@ export default async function handler(
 ) {
 	try {
     
-    const DEFAULT_LIMIT = 1000;
-    const DEFAULT_OFFSET = 0;
-    
     const {
       handle: podcastId,
-      offset = DEFAULT_OFFSET.toString(),
-      limit = DEFAULT_LIMIT.toString(),
     } = req.query
     
-    if (typeof podcastId === 'string'  && typeof offset === 'string' && typeof limit === 'string'){
-      const episodesResponse = await fetch(GET_EPISODES_URL({podcastId, offset: parseInt(offset), limit: parseInt(limit)}));
+    if (typeof podcastId === 'string'){
+      const episodesResponse = await fetch(GET_EPISODES_URL({podcastId}));
     
 		const {results: rawEpisodes}: {
       resultCount: number;
@@ -42,9 +37,8 @@ export default async function handler(
       imagePlayer: episode.artworkUrl160,
       
 		})).filter(episode => episode.episodeUrl !== undefined);
-    const heroImage = `${rawEpisodes[0].artworkUrl600.replace('600x600bb', '832x320bb')}`
 
-		res.status(200).json({podcastDetails, podcastTitle: rawEpisodes[0].collectionName, heroImage,current_page: parseInt(offset)/parseInt(limit)});
+		res.status(200).json({podcastDetails, podcastTitle: rawEpisodes[0].collectionName});
   }else{
     res.status(500).send('Error getting parameters');
   }

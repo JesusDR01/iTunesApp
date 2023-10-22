@@ -9,6 +9,7 @@
 		"dev": "next dev",
 		"test": "jest --watch",
 		"test:ci": "jest --ci",
+		"test:update": "jest --watch -u ",
 		"test:coverage": "jest --coverage",
 		"e2e": "start-server-and-test dev http://localhost:3000 cy:run",
 		"cy:run": "cypress run --headless",

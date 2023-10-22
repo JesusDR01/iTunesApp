@@ -123,7 +123,7 @@ export function PodcastsList(): JSX.Element {
 	return (
 		<>
 			<div
-				className="flex items-center justify-center flex-col max-w-[832px] m-auto min-h-[100vh]"
+				className="flex items-center justify-center flex-col max-w-[832px] m-auto min-h-[100vh] pb-[100px]"
 				key={sort}
 			>
 				{currentPodcasts?.pages ? (
