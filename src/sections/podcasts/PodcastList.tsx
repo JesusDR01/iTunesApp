@@ -65,7 +65,7 @@ export function PodcastsList(): JSX.Element {
 		useControls: [, update],
 	} = usePlayer();
 
-	const [sort, setSort] = useState('Title');
+	const [sort, setSort] = useState('');
 
 	useEffect(() => {
 		update({

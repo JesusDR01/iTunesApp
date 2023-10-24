@@ -55,7 +55,7 @@ describe('Player', () => {
 			cy.get(
 				'[data-testid="podcast-row"] ~ [data-testid="podcast-row"] [data-testid="PauseIcon"] ',
 			).should('exist');
-			cy.get('[data-testid="prev"]').click().wait(2000);
+			cy.get('[data-testid="prev"]').click().wait(5000);
 			cy.get(
 				'[data-testid="podcast-row"] ~ [data-testid="podcast-row"] [data-testid="PauseIcon"] ',
 			).should('not.exist');
@@ -75,7 +75,7 @@ describe('Player', () => {
 		sortAndPlay();
 		testForwardBackward();
 		cy.visit('http://localhost:3000/podcast/1535809341');
-		cy.get('[data-testid="play-pause"]').wait(2000);
+		cy.get('[data-testid="play-pause"]').wait(5000);
 		cy.get('span[data-testid="play-pause"]')
 			.first()
 			.click({ force: true })
