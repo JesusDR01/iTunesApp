@@ -11,8 +11,6 @@ import { PodcastRow } from './PodcastRow';
 import { PodcastHeader } from './PodcastHeader';
 
 import { Order } from 'components/Order';
-// import { Podcasts } from '@modules/podcasts/domain/Podcast';
-// import { InfiniteData } from '@tanstack/react-query';
 import { createApiPodcastRepository } from '@modules/podcasts/infra/ApiPodcastsRepository';
 
 const debounce = debouncer();
@@ -30,13 +28,7 @@ export function PodcastsList(): JSX.Element {
 		useListTopPodcasts({ enabled: term === '' });
 
 	const offsetRef = useRef(0);
-	// const [currentPodcasts, setCurrentPodcasts] = useState<
-	// 	| InfiniteData<{
-	// 			current_page: number;
-	// 			podcasts: Podcasts;
-	// 	  }>
-	// 	| undefined
-	// >(undefined);
+
 
 	useEffect(() => {
 		debounce.exec(() => {
@@ -66,7 +58,7 @@ export function PodcastsList(): JSX.Element {
 			offsetRef.current += OFFSET_STEP;
 			fetchNextPage({
 				pageParam: { offset: offsetRef.current || OFFSET_STEP },
-			}) //.then(page => setCurrentPodcasts(page.data));
+			})
 		}
 	}, [inView, fetchNextPage, term, searchPodcasts?.pages, isFetchingNextPage]);
 
@@ -75,14 +67,6 @@ export function PodcastsList(): JSX.Element {
 	} = usePlayer();
 
 	const [sort, setSort] = useState('Title');
-
-	// useEffect(() => {
-	// 	console.log('render', term, searchPodcasts?.pages[0].podcasts[0].title);
-	// 	if (!currentPodcasts) {
-	// 		console.log(currentPodcasts);
-	// 		setCurrentPodcasts(searchPodcasts);
-	// 	}
-	// }, [searchPodcasts, term, currentPodcasts]);
 
 	useEffect(() => {
 		update({
@@ -95,7 +79,6 @@ export function PodcastsList(): JSX.Element {
 	const handleSort = useCallback(
 		(sort: string) => {
 			setSort(sort);
-			// const currentPodcastsCopy = structuredClone(currentPodcasts);
 			searchPodcasts?.pages?.forEach(page => {
 				page.podcasts.sort((a, b) => {
 					if (sort === 'Title') {
@@ -116,13 +99,11 @@ export function PodcastsList(): JSX.Element {
 					return bIndex - aIndex;
 				});
 			});
-			// if (currentPodcastsCopy) setCurrentPodcasts(currentPodcastsCopy);
 		},
 		[setSort, searchPodcasts],
 	);
 	if ((isSearchLoading && term !== '') || isTopPodcastsLoading)
 		return <Loader />;
-	// console.log(currentPodcasts?.pages, 'cpp');
 
 	return (
 		<>
