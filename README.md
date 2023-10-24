@@ -1,10 +1,14 @@
 ## DEMO
 
 
+https://github.com/Telefonica/living-app-v2-estadio-infinito/assets/15522791/7b096ff7-f52e-4e92-8604-3527bc3f53a4
 
 ## Technologies
 - [TypeScript](https://www.typescriptlang.org/) as language
 - [Next.js](https://nextjs.org/) as React Front/Back Framework
+
+
+
 - [TailwindCSS](https://tailwindcss.com/) for styling
 - [DaisyUI](https://daisyui.com/) for TailwindCSS components
 - [Cypress](https://www.cypress.io/) for E2E testing
