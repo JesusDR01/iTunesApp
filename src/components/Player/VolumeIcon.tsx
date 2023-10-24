@@ -11,14 +11,14 @@ export const VolumeIcon = ({
 }) => {
 	const previousVolume = useRef(volume);
 	return (
-		<span className='cursor-pointer'>
+		<span className="cursor-pointer">
 			{volume === 0 ? (
 				<VolumeOffIcon
 					onClick={() => handleVolumeChange(previousVolume.current || 1)}
 				/>
 			) : (
 				<VolumeUpIcon
-				className="text-white"
+					className="text-white"
 					onClick={() => {
 						previousVolume.current = volume;
 						handleVolumeChange(0);

@@ -1,17 +1,17 @@
-import { httpInstance } from "./http.instance"
+import { httpInstance } from './http.instance';
 const configureInitialInterceptors = () => {
-  httpInstance.interceptors.request.use((conf) => {
-    const updatedConf = conf
+	httpInstance.interceptors.request.use(conf => {
+		const updatedConf = conf;
 
-    return updatedConf
-  })
+		return updatedConf;
+	});
 
-  httpInstance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      return Promise.reject(error)
-    }
-  )
-}
+	httpInstance.interceptors.response.use(
+		response => response,
+		error => {
+			return Promise.reject(error);
+		},
+	);
+};
 
-export { configureInitialInterceptors }
+export { configureInitialInterceptors };

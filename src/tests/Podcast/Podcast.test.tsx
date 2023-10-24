@@ -45,7 +45,6 @@ Object.defineProperty(global, 'IntersectionObserver', {
 	value: IntersectionObserver,
 });
 
-
 describe('Podcast screen', () => {
 	it('should render the podcast screen without crashing', () => {
 		const { container } = render(

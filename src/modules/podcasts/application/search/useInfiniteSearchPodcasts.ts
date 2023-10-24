@@ -20,17 +20,20 @@ function useInfiniteSearchPodcasts({
 }) {
 	return useInfiniteQuery(
 		[TAG_TYPES.PODCASTS, term],
-		(data) => {
-		return	searchPodcasts({ term, pageParam: { offset: data?.pageParam?.offset || offset } }).then(res => res.data)
+		data => {
+			return searchPodcasts({
+				term,
+				pageParam: { offset: data?.pageParam?.offset || offset },
+			}).then(res => res.data);
 		},
 		{
-			getPreviousPageParam: (firstPage) => firstPage.current_page - 1,
-    getNextPageParam: (lastPage) => {
-      return lastPage.podcasts.length <= 0
-        ? undefined
-        : lastPage.current_page + 1
-    },
-			enabled
+			getPreviousPageParam: firstPage => firstPage.current_page - 1,
+			getNextPageParam: lastPage => {
+				return lastPage.podcasts.length <= 0
+					? undefined
+					: lastPage.current_page + 1;
+			},
+			enabled,
 		},
 	);
 }

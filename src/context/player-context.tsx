@@ -10,7 +10,6 @@ import {
 
 export type PodcastList = Podcasts;
 
-
 export type State = {
 	randomMode: boolean;
 	currentPodcast: Podcast | null;
@@ -145,13 +144,13 @@ export const PlayerContextProvider = ({
 							const { podcastList, currentPodcast, randomMode, loopMode } =
 								state;
 
-								if (loopMode === 'one' && audioRef.current) {
-									audioRef.current.currentTime = 0;
-									audioRef.current.play();
-									return {
-										...state,
-									};
-								}
+							if (loopMode === 'one' && audioRef.current) {
+								audioRef.current.currentTime = 0;
+								audioRef.current.play();
+								return {
+									...state,
+								};
+							}
 
 							if (podcastList && currentPodcast) {
 								const currentPodcastIndex = podcastList.findIndex(

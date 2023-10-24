@@ -6,7 +6,7 @@ import useListTopPodcasts from '../application/top/useListTopPodcasts';
 export function createApiPodcastRepository(): PodcastRepository {
 	return {
 		useInfiniteSearchPodcasts,
-		useGetPodcast: useGetPodcast,
+		useGetPodcast,
 		useListTopPodcasts,
 	};
 }

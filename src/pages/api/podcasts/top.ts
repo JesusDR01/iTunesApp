@@ -19,7 +19,7 @@ export default async function handler(
 			author: podcast['im:artist'].label,
 			description: podcast.summary.label,
 			image: podcast['im:image'][2].label,
-      released: formatRelease(podcast['im:releaseDate'].label),
+			released: formatRelease(podcast['im:releaseDate'].label),
 		}));
 
 		res.status(200).json(podcasts);

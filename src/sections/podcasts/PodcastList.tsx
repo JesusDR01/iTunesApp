@@ -29,7 +29,6 @@ export function PodcastsList(): JSX.Element {
 
 	const offsetRef = useRef(0);
 
-
 	useEffect(() => {
 		debounce.exec(() => {
 			setTerm(search);
@@ -58,7 +57,7 @@ export function PodcastsList(): JSX.Element {
 			offsetRef.current += OFFSET_STEP;
 			fetchNextPage({
 				pageParam: { offset: offsetRef.current || OFFSET_STEP },
-			})
+			});
 		}
 	}, [inView, fetchNextPage, term, searchPodcasts?.pages, isFetchingNextPage]);
 
@@ -71,8 +70,7 @@ export function PodcastsList(): JSX.Element {
 	useEffect(() => {
 		update({
 			type: 'setPodcastList',
-			podcastList:
-				searchPodcasts?.pages.flatMap(pages => pages.podcasts) || [],
+			podcastList: searchPodcasts?.pages.flatMap(pages => pages.podcasts) || [],
 		});
 	}, [searchPodcasts, update, sort]);
 

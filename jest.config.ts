@@ -29,8 +29,12 @@ const customJestConfig = {
   // testEnvironment: 'jsdom',
   testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
   transform: {
-    '^.+\\.(js|ts|tsx)$': 'ts-jest',
-    '^.+.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
+    "^.+\\.(ts|tsx)$": [
+      "ts-jest",
+      {
+        tsconfig: "tsconfig.jest.json",
+      },
+    ],
   },
   transformIgnorePatterns: ['node_modules/(?!(uuid))', 'node_modules/@telefonica/estadio-infinito-common'],
 };

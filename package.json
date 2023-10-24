@@ -18,7 +18,10 @@
 		"start": "next start",
 		"lint": "next lint",
 		"lint:fix": "next lint --fix",
-		"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+		"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+		"prettier:check": "prettier --check './src/**/*.{js,ts,tsx,json,md,css}'",
+		"prettier:write": "prettier --write './src/**/*.{js,ts,tsx,json,md,css}'",
+		"blue-ball": "npm run lint && npm run prettier:check && pnpm test:update && pnpm build && npm pack --dry-run"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.11.1",
