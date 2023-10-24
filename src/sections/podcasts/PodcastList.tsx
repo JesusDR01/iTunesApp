@@ -11,8 +11,8 @@ import { PodcastRow } from './PodcastRow';
 import { PodcastHeader } from './PodcastHeader';
 
 import { Order } from 'components/Order';
-import { Podcasts } from '@modules/podcasts/domain/Podcast';
-import { InfiniteData } from '@tanstack/react-query';
+// import { Podcasts } from '@modules/podcasts/domain/Podcast';
+// import { InfiniteData } from '@tanstack/react-query';
 import { createApiPodcastRepository } from '@modules/podcasts/infra/ApiPodcastsRepository';
 
 const debounce = debouncer();
@@ -30,13 +30,13 @@ export function PodcastsList(): JSX.Element {
 		useListTopPodcasts({ enabled: term === '' });
 
 	const offsetRef = useRef(0);
-	const [currentPodcasts, setCurrentPodcasts] = useState<
-		| InfiniteData<{
-				current_page: number;
-				podcasts: Podcasts;
-		  }>
-		| undefined
-	>(undefined);
+	// const [currentPodcasts, setCurrentPodcasts] = useState<
+	// 	| InfiniteData<{
+	// 			current_page: number;
+	// 			podcasts: Podcasts;
+	// 	  }>
+	// 	| undefined
+	// >(undefined);
 
 	useEffect(() => {
 		debounce.exec(() => {
@@ -66,7 +66,7 @@ export function PodcastsList(): JSX.Element {
 			offsetRef.current += OFFSET_STEP;
 			fetchNextPage({
 				pageParam: { offset: offsetRef.current || OFFSET_STEP },
-			});
+			}) //.then(page => setCurrentPodcasts(page.data));
 		}
 	}, [inView, fetchNextPage, term, searchPodcasts?.pages, isFetchingNextPage]);
 
@@ -76,74 +76,69 @@ export function PodcastsList(): JSX.Element {
 
 	const [sort, setSort] = useState('Title');
 
-	useEffect(() => {
-		if (!currentPodcasts || term === '') return setCurrentPodcasts(searchPodcasts);
+	// useEffect(() => {
+	// 	console.log('render', term, searchPodcasts?.pages[0].podcasts[0].title);
+	// 	if (!currentPodcasts) {
+	// 		console.log(currentPodcasts);
+	// 		setCurrentPodcasts(searchPodcasts);
+	// 	}
+	// }, [searchPodcasts, term, currentPodcasts]);
 
+	useEffect(() => {
 		update({
 			type: 'setPodcastList',
 			podcastList:
-				currentPodcasts?.pages.flatMap(pages => pages.podcasts) || [],
+				searchPodcasts?.pages.flatMap(pages => pages.podcasts) || [],
 		});
-	}, [currentPodcasts, update, searchPodcasts, term]);
+	}, [searchPodcasts, update, sort]);
 
 	const handleSort = useCallback(
 		(sort: string) => {
 			setSort(sort);
-			setCurrentPodcasts(prev => {
-				if (prev !== undefined) {
-					const currentPodcastsCopy = { ...prev };
-					currentPodcastsCopy.pages.forEach(page => {
-						page.podcasts.sort((a, b) => {
-							if (sort === 'Title') {
-								return a.title.localeCompare(b.title);
-							}
-							if (sort === 'Topic' && a.description && b.description) {
-								return a.description.localeCompare(b.description);
-							}
-							const original = searchPodcasts?.pages.flatMap(
-								page => page.podcasts,
-							);
-							const aIndex =
-								original?.findIndex(
-									podcast => podcast.episodeUrl === a.episodeUrl,
-								) || 0;
-							const bIndex =
-								original?.findIndex(
-									podcast => podcast.episodeUrl === b.episodeUrl,
-								) || 0;
-							return bIndex - aIndex;
-						});
-					});
-					console.log(currentPodcastsCopy.pages[0].podcasts[0].title);
-
-					// debugger
-					return currentPodcastsCopy;
-				}
+			// const currentPodcastsCopy = structuredClone(currentPodcasts);
+			searchPodcasts?.pages?.forEach(page => {
+				page.podcasts.sort((a, b) => {
+					if (sort === 'Title') {
+						return a.title.localeCompare(b.title);
+					}
+					if (sort === 'Topic' && a.description && b.description) {
+						return a.description.localeCompare(b.description);
+					}
+					const original = searchPodcasts?.pages.flatMap(page => page.podcasts);
+					const aIndex =
+						original?.findIndex(
+							podcast => podcast.episodeUrl === a.episodeUrl,
+						) || 0;
+					const bIndex =
+						original?.findIndex(
+							podcast => podcast.episodeUrl === b.episodeUrl,
+						) || 0;
+					return bIndex - aIndex;
+				});
 			});
+			// if (currentPodcastsCopy) setCurrentPodcasts(currentPodcastsCopy);
 		},
 		[setSort, searchPodcasts],
 	);
 	if ((isSearchLoading && term !== '') || isTopPodcastsLoading)
 		return <Loader />;
+	// console.log(currentPodcasts?.pages, 'cpp');
 
 	return (
 		<>
-			<div
-				className="flex items-center justify-center flex-col max-w-[832px] m-auto min-h-[100vh] pb-[100px]"
-				key={sort}
-			>
-				{currentPodcasts?.pages ? (
+			<div className="flex items-center justify-center flex-col max-w-[832px] m-auto min-h-[100vh] pb-[100px]">
+				{searchPodcasts?.pages ? (
 					<>
 						<Order
-							duration={currentPodcasts.pages
+							duration={searchPodcasts.pages
 								.flatMap(page => page.podcasts)
 								.some(podcast => podcast.duration)}
 							handleSort={handleSort}
 							className="self-end h-[60px] flex items-center"
 						/>
 						<PodcastHeader />
-						{currentPodcasts?.pages.flatMap(page => page.podcasts)?.length &&
-							currentPodcasts?.pages.map(page =>
+						{searchPodcasts?.pages.flatMap(page => page.podcasts)?.length &&
+							searchPodcasts?.pages.map(page =>
 								page.podcasts.map(podcast => (
 									<PodcastRow podcast={podcast} key={podcast.episodeUrl} />
 								)),
