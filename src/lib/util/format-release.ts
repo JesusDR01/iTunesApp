@@ -1,13 +1,3 @@
-export const formatPrice = (num?: number) => {
-  if (!num) return ""
-  if (num >= 10000 && num < 1000000) {
-    return Math.floor(num / 1000) * 1000
-  } else if (num >= 1000000) {
-    return Math.floor(num / 10000) * 10000
-  }
-  return num.toFixed()
-}
-
 export const formatRelease = (date: string) => {
   const previousDate = new Date(date) 
   const timeDifference = Date.now() - new Date(date).getTime()

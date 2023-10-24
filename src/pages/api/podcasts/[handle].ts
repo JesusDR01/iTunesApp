@@ -1,6 +1,6 @@
-import { GET_EPISODES_URL } from 'utils/constants';
+import { GET_EPISODES_URL } from '@lib/services/api/constants';
 import type { NextApiRequest, NextApiResponse } from 'next/types';
-import { formatRelease } from '@lib/utils';
+import { formatRelease } from '@lib/util/format-release';
 import { Podcasts, RawPodcastDetail } from '@modules/podcasts/domain/Podcast';
 
 export default async function handler(

@@ -22,3 +22,7 @@ export const SEARCH_PODCASTS_URL = ({
 	limit: number;
 }) =>
 	`${ITUNES_BASE}/search?entity=podcastEpisode&term=${term}&media=podcast&offset=${offset}&limit=${limit}`;
+
+export const podcastController = "/podcasts"
+export const PER_PAGE_DEFAULT = 200;
+export const OFFSET_STEP = 200;

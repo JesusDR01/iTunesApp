@@ -1,5 +1,5 @@
 import { getRequest } from '@lib/util/http';
-import { PER_PAGE_DEFAULT, podcastController } from './consts';
+import { PER_PAGE_DEFAULT, podcastController } from './constants';
 import { AxiosRequestConfig } from 'axios';
 import {  Podcasts } from '@modules/podcasts/domain/Podcast';
 

@@ -1,13 +1,11 @@
 import Link from 'next/link';
-import useInfiniteSearchPodcasts from '@modules/podcasts/application/search/useInfiniteSearchPodcasts';
 import { useInView } from 'react-intersection-observer';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import useListTopPodcasts from '@modules/podcasts/application/top/useListTopPodcasts';
 import Typography from '@mui/material/Typography';
 import { useSearch } from 'context/search-context';
 import { debouncer } from '@lib/util/debouncer';
 import { Loader } from 'components/Loader';
-import { OFFSET_STEP } from '@lib/services/api/consts';
+import { OFFSET_STEP } from '@lib/services/api/constants';
 import { usePlayer } from 'context/player-context';
 import { PodcastRow } from './PodcastRow';
 import { PodcastHeader } from './PodcastHeader';
@@ -15,8 +13,12 @@ import { PodcastHeader } from './PodcastHeader';
 import { Order } from 'components/Order';
 import { Podcasts } from '@modules/podcasts/domain/Podcast';
 import { InfiniteData } from '@tanstack/react-query';
+import { createApiPodcastRepository } from '@modules/podcasts/infra/ApiPodcastsRepository';
 
 const debounce = debouncer();
+
+const { useInfiniteSearchPodcasts, useListTopPodcasts } =
+	createApiPodcastRepository();
 
 export function PodcastsList(): JSX.Element {
 	const {
@@ -75,13 +77,14 @@ export function PodcastsList(): JSX.Element {
 	const [sort, setSort] = useState('Title');
 
 	useEffect(() => {
-		setCurrentPodcasts(searchPodcasts);
-		
+		if (!currentPodcasts || term === '') return setCurrentPodcasts(searchPodcasts);
+
 		update({
 			type: 'setPodcastList',
-			podcastList: currentPodcasts?.pages.flatMap(pages => pages.podcasts) || [],
+			podcastList:
+				currentPodcasts?.pages.flatMap(pages => pages.podcasts) || [],
 		});
-	}, [currentPodcasts, update, searchPodcasts]);
+	}, [currentPodcasts, update, searchPodcasts, term]);
 
 	const handleSort = useCallback(
 		(sort: string) => {
@@ -108,9 +111,12 @@ export function PodcastsList(): JSX.Element {
 								original?.findIndex(
 									podcast => podcast.episodeUrl === b.episodeUrl,
 								) || 0;
-							return aIndex - bIndex;
+							return bIndex - aIndex;
 						});
 					});
+					console.log(currentPodcastsCopy.pages[0].podcasts[0].title);
+
+					// debugger
 					return currentPodcastsCopy;
 				}
 			});

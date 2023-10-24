@@ -1,6 +1,6 @@
-import { SEARCH_PODCASTS_URL } from 'utils/constants';
+import { SEARCH_PODCASTS_URL } from '@lib/services/api/constants';
 import type { NextApiRequest, NextApiResponse } from 'next/types';
-import { formatRelease } from '@lib/utils';
+import { formatRelease } from '@lib/util/format-release';
 import { Podcasts } from '@modules/podcasts/domain/Podcast';
 
 interface SearchPodcastResponse {

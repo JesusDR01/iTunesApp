@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { RawPodcasts } from 'modules/podcasts/domain/Podcast';
-import { ALL_PODCASTS_URL } from 'utils/constants';
+import { ALL_PODCASTS_URL } from '@lib/services/api/constants';
 import type { NextApiRequest, NextApiResponse } from 'next/types';
-import { formatRelease } from '@lib/utils';
+import { formatRelease } from '@lib/util/format-release';
 
 export default async function handler(
 	req: NextApiRequest,

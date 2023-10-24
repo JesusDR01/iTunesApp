@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import useGetPodcast from '@modules/podcasts/application/get/useGetPodcast';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { PodcastHero } from './PodcastHero';
 import { PodcastRow } from './PodcastRow';
@@ -7,6 +6,9 @@ import { PlayPauseBtn } from 'components/PlayPauseBtn';
 import { usePlayer } from 'context/player-context';
 import { PodcastHeader } from './PodcastHeader';
 import { Order } from 'components/Order';
+import { createApiPodcastRepository } from '@modules/podcasts/infra/ApiPodcastsRepository';
+
+const { useGetPodcast } = createApiPodcastRepository();
 
 export function PodcastsDetailList({
 	podcastId,
