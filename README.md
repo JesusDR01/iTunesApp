@@ -91,7 +91,7 @@ modules/
 
 The project has unit and E2E testing. The unit testing is done using **Jest** and **Testing Library**. The E2E testing is done using **Cypress**.
 
-Unit tests and Component tests are in the `__tests__` folder.
+Unit tests and Component tests are in the `src/tests` folder.
 
 The E2E tests are in the `cypress` folder.
 
