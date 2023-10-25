@@ -14,8 +14,10 @@
 		"e2e": "start-server-and-test dev http://localhost:3000 cy:run",
 		"cy:run": "cypress run --headless",
 		"cy:open": "cypress open",
+		"build:local": "next build && cp -r ./.next/static ./.next/standalone/.next/",
 		"build": "next build",
 		"start": "next start",
+		"start:local": "node ./.next/standalone/server.js",
 		"lint": "next lint",
 		"lint:fix": "next lint --fix",
 		"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
@@ -40,9 +42,7 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-i18next": "^13.2.1",
-		"react-intersection-observer": "^9.5.2"
-	},
-	"devDependencies": {
+		"react-intersection-observer": "^9.5.2",
 		"@commitlint/cli": "^17.6.1",
 		"@commitlint/config-conventional": "^17.6.1",
 		"@testing-library/dom": "7.21.4",
@@ -58,7 +58,6 @@
 		"@typescript-eslint/eslint-plugin": "^5.59.0",
 		"@typescript-eslint/parser": "^5.59.0",
 		"autoprefixer": "10.4.14",
-		"cypress": "^12.10.0",
 		"daisyui": "^2.51.5",
 		"eslint": "^8.38.0",
 		"eslint-config-next": "^13.3.0",
@@ -75,5 +74,8 @@
 		"tailwindcss": "3.3.1",
 		"ts-jest": "^29.1.0",
 		"typescript": "5.0.4"
+	},
+	"devDependencies": {
+		"cypress": "^12.10.0"
 	}
 }

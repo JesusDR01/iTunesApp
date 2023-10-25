@@ -1,7 +1,17 @@
 ## DEMO
 
+https://itunesapp.bules.eu/
 
 https://github.com/Telefonica/living-app-v2-estadio-infinito/assets/15522791/7b096ff7-f52e-4e92-8604-3527bc3f53a4
+
+## BUILD
+Local:
+
+`pnpm install`
+`pnpm build:local`
+`pnpm start:local`
+
+Note that you might have to delete .env.production to avoid CORS error with localhost:3000
 
 ## Technologies
 - [TypeScript](https://www.typescriptlang.org/) as language

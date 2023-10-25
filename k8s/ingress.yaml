@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: node-ingress
+  namespace: itunes-app-store
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod-itunes-app"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 500m
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - 'itunesapp.bules.eu'
+      secretName: node-tls
+  rules:
+    - host: itunesapp.bules.eu
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: itunes-app-storefront-service
+              port:
+                number: 80
