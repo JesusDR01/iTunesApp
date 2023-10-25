@@ -100,24 +100,24 @@ The E2E tests are in the `cypress` folder.
 
 - Why we choose NextJs instead of React?
 
-+ I thought the best way to bypass the cors error was by encapsulating in my own server. Making the backend completely opaque to the client.
-+ Using NextJs allows me create a kind of middleware to get the data I need giving the front end exactly the data needed.
+  + I thought the best way to bypass the cors error was by encapsulating in my own server. Making the backend completely opaque to the client.
+  + Using NextJs allows me create a kind of middleware to get the data I need giving the front end exactly the data needed.
 
 
 - Why is there Top podcasts?
 
-+ It had no sense to just show an empty screen with a search bar. Showing top 100 podcasts is not strictly necessary, but welcome.
+  + It had no sense to just show an empty screen with a search bar. Showing top 100 podcasts is not strictly necessary, but welcome.
 
 - Why added infinite scroll to search? 
 
-+ You might found several podcasts after a search, infinite scroll allows you to discover new podcasts.
+  + You might found several podcasts after a search, infinite scroll allows you to discover new podcasts.
 
 - Why can't I see all the episodes from a podcast? 
 
-+ Itunes API allows to set an offset and limit with search API, but it doesn't work with lookup API. By using amp-api.music.apple.com we could get the offset functionality, but we need Apple developer program...
+  + Itunes API allows to set an offset and limit with search API, but it doesn't work with lookup API. By using amp-api.music.apple.com we could get the offset functionality, but we need Apple developer program...
 
 - Why React Query?
 
-+ We could use Redux toolkit, SWR, or even no library at all... But React query have Infinite scrolling and request cache out of the box, adittionally you can use the response data as global thanks to the cache system
+  + We could use Redux toolkit, SWR, or even no library at all... But React query have Infinite scrolling and request cache out of the box, adittionally you can use the response data as global thanks to the cache system
 
 
