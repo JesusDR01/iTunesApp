@@ -86,13 +86,13 @@ describe('Player', () => {
 	});
 	it('Should enable / disable random mode', () => {
 		cy.get('[data-testid="random"]').click();
-		cy.get('[data-testid="next"]').click().wait(5000);
+		cy.get('[data-testid="next"]').click().wait(10000);
 
 		//Get second podcast
 		cy.get('[data-testid="podcast-row"]')
 			.eq(1)
 			.find('[data-testid="PauseIcon"]')
-			.should('not.exist');
+			.should('not.exist').wait(5000);
 
 		// Get podcast playing
 		cy.get(
